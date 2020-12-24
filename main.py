@@ -65,7 +65,7 @@ def get_index_of_value(value, arr_of_value):  # Mustafa
 def rules (fuzzy_values, states):  # mustafa
 
     # First Rule . If project_funding is high or team_experience_level is expert then risk is low
-    if "high" in states[0] & "expert" in states [1]:
+    if "high" in states[0] and "expert" in states [1]:
         value_of_high = fuzzy_values[get_index_of_value("high", states[0])]
         value_of_expert = fuzzy_values[get_index_of_value("expert", states[1])]
         rule1_value = max(value_of_high, value_of_expert)
@@ -78,7 +78,7 @@ def rules (fuzzy_values, states):  # mustafa
             rule1_value = 0
     # Second Rule If project_funding is medium and team_experience_level is intermediate
     # or team_experience_level is beginner then risk is normal.
-    if "medium" in states[0] & ("intermediate" in states[1] | "beginner" in states[1]):
+    if "medium" in states[0] and ("intermediate" in states[1] or "beginner" in states[1]):
         value_of_medium = fuzzy_values[get_index_of_value("medium", states[0])]
         if "intermediate" in states[1]:
             value_of_intermediate = fuzzy_values[get_index_of_value("intermediate", states[1])]
@@ -95,7 +95,7 @@ def rules (fuzzy_values, states):  # mustafa
     else:
         rule3_value = 0
     # Fourth Rule If project_funding is low and team_experience_level is beginner then risk is high
-    if "low" in states[0] & "beginner" in states[1]:
+    if "low" in states[0] and "beginner" in states[1]:
         value_of_low = fuzzy_values[get_index_of_value("low", states[0])]
         value_of_beginner2 = fuzzy_values[get_index_of_value("beginner", states[1])]
         rule4_value = min(value_of_low, value_of_beginner2)
