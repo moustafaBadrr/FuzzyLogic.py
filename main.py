@@ -52,13 +52,59 @@ def linesEquations(inputs): #mina
     #print(states)
 
     return fuzzyValues, states
-def rules(fuzzyValues, states): # mustafa
-    #fuzzyValues=[[res1,res2],[res1,res2]]
-    #states[["state1","state2"],["state1","state2"]]
-    features=["project_funding","team_experience_level"]
-    #rules.............
-    #return [v1,v2,v3,v4],["state1","state2","state3","state4"]
-    pass
+
+
+
+def get_index_of_value(value, arr_of_value):  # Mustafa
+    for i in range (0, len(arr_of_value)):
+        if arr_of_value[i] == value:
+            return i
+    return -1
+
+
+def rules (fuzzy_values, states):  # mustafa
+
+    # First Rule . If project_funding is high or team_experience_level is expert then risk is low
+    if "high" in states[0] & "expert" in states [1]:
+        value_of_high = fuzzy_values[get_index_of_value("high", states[0])]
+        value_of_expert = fuzzy_values[get_index_of_value("expert", states[1])]
+        rule1_value = max(value_of_high, value_of_expert)
+    else:
+        if "high" in states[0]:
+            rule1_value = fuzzy_values[get_index_of_value("high", states[0])]
+        elif "expert" in states[1]:
+            rule1_value = fuzzy_values[get_index_of_value("expert", states[1])]
+        else:
+            rule1_value = 0
+    # Second Rule If project_funding is medium and team_experience_level is intermediate
+    # or team_experience_level is beginner then risk is normal.
+    if "medium" in states[0] & ("intermediate" in states[1] | "beginner" in states[1]):
+        value_of_medium = fuzzy_values[get_index_of_value("medium", states[0])]
+        if "intermediate" in states[1]:
+            value_of_intermediate = fuzzy_values[get_index_of_value("intermediate", states[1])]
+            rule2_value = min(value_of_medium, value_of_intermediate)
+        elif "beginner" in states[1]:
+            value_of_beginner = fuzzy_values[get_index_of_value("beginner", states[1])]
+            rule2_value = min(value_of_medium, value_of_beginner)
+    else:
+        rule2_value = 0  # because it is AND so we select the minimum and
+        # if any missing value so the minimum is equal to 0
+    # Third Rule If project_funding is very low then risk is high
+    if "very low" in states[0]:
+        rule3_value = fuzzy_values(get_index_of_value("very low", states[0]))
+    else:
+        rule3_value = 0
+    # Fourth Rule If project_funding is low and team_experience_level is beginner then risk is high
+    if "low" in states[0] & "beginner" in states[1]:
+        value_of_low = fuzzy_values[get_index_of_value("low", states[0])]
+        value_of_beginner2 = fuzzy_values[get_index_of_value("beginner", states[1])]
+        rule4_value = min(value_of_low, value_of_beginner2)
+    else:
+        rule4_value = 0
+    return [rule1_value, rule2_value, rule3_value, rule4_value], ["low", "normal", "high", "high"]
+
+
+
 def calcTheResult(rulesValuesRes,rulesStatesRes): #peter
     # rulesValuesRes=[v1, v2, v3, v4]
     # rulesStatesRes=["state1", "state2", "state3", "state4"]
