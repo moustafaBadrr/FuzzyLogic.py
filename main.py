@@ -137,3 +137,5 @@ def main():
     risk, state=fuzzy(inputs)
     print("risk =",risk)
     print("risk will be ", state)
+    
+main()
