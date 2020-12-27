@@ -109,15 +109,48 @@ def rules (fuzzy_values, states):  # mustafa
 
 
 
-def calcTheResult(rulesValuesRes,rulesStatesRes): #peter
-    # rulesValuesRes=[v1, v2, v3, v4]
-    # rulesStatesRes=["state1", "state2", "state3", "state4"]
+def calcTheResult(rulesValuesRes, rulesStatesRes):  # peter
 
-    riskSets=[[0,25,50],[25,50,75],[50,100,100]]
-    riskStates=["high","normal","low"]
+    riskSets = [[0, 25, 50], [25, 50, 75], [50, 100, 100]]
+    riskStates = ["high", "normal", "low"]
+    centroid_high = sum(riskSets[0]) / len(riskSets[0])
+    centroid_normal = sum(riskSets[1]) / len(riskSets[1])
+    centroid_low = sum(riskSets[2]) / len(riskSets[2])
+    numerator = []
+    for i in range(len(rulesValuesRes)):
+        if rulesStatesRes[i] == 'low':
+            numerator.append(rulesValuesRes[i] * centroid_low)
+        elif rulesStatesRes[i] == 'normal':
+            numerator.append(rulesValuesRes[i] * centroid_normal)
+        else:
+            numerator.append(rulesValuesRes[i] * centroid_high)
+    risk = sum(numerator) / sum(rulesValuesRes)
+    possible_states = []
+    points = []
+    lines3Shape = [0, 1, 0]
+    for i in range(len(riskSets)):
+        if min(riskSets[i]) < risk < max(riskSets[i]):
+            if i == 0:
+                possible_states.append("high")
+            elif i == 1:
+                possible_states.append("normal")
+            else:
+                possible_states.append("low")
+            for j in range(len(riskSets[i])):
+                if riskSets[i][j] > risk:
+                    line = [[riskSets[i][j - 1], lines3Shape[j - 1]],
+                            [riskSets[i][j], lines3Shape[j]]]
+                    points.append(line)
+                    break
 
-    # return risk=66.6 state="normal"
-    pass
+    result = []
+    for i in range(len(points)):
+        y = getValue(points[i], risk)
+        result.append(y)
+    max_intersect = max(result)
+    index = get_index_of_value(max_intersect,result)
+    result_state = possible_states[index]
+    return risk , result_state
 
 def fuzzy(inputs):
     fuzzyValues,states=linesEquations(inputs)
